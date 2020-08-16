@@ -3,6 +3,7 @@ var exSession 	= require('express-session');
 var bodyParser 	= require('body-parser');
 var app 		= express();
 var login       = require('./controllers/login');
+var admin       = require('./controllers/admin');
 
 const cookieParser = require('cookie-parser');
 var session = require('express-session');
@@ -13,6 +14,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(exSession({secret: 'my secret value', saveUninitialized: true, resave: false}));
 
 app.use('/login',login);
+app.use('/admin',admin);
 
 app.listen(25565, function(){
     console.log('express http server started at...25565');
