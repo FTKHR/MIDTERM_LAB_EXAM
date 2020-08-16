@@ -47,3 +47,51 @@ router.post('/addproduct', [
         });
     }
 });
+router.get('/updateproduct/:id', function (req, res){
+    
+    ID = req.params.id;
+
+    employeedb.getProductByID(ID, function (result){
+        var value = {
+            name: result.name,
+            quantity: result.quantity,
+            price: result.price,
+        };
+        
+        var valueCheck = [];
+
+        res.render('employee/updateproduct',{value, valueCheck, product: result});
+    });    
+});
+
+router.post('/updateproduct/:id',[
+    body('name','Name required!').notEmpty(),
+    body('quantity').notEmpty().withMessage('Quantity required!').isNumeric().withMessage('Quantity must be numeric!'),
+    body('price').notEmpty().withMessage('Price required!').isNumeric().withMessage('Price must be numeric!'),
+], function (req, res){
+    
+    ID = req.params.id;
+
+    employeedb.getProductByID(ID, function (result){
+        var value = {
+            name: result.name,
+            quantity: result.quantity,
+            price: result.price,
+        };
+
+        var valueCheck = [];
+    
+        validationResult(req).errors.forEach(error => {
+            valueCheck.push(error.msg);
+        });
+
+        if (valueCheck.length > 0){
+            res.render('employee/updateProduct',{value, valueCheck, product: result});
+        } else {
+            employeedb.updateProduct(ID, req.body.name, req.body.quantity, req.body.price, function(result1){
+                res.redirect('/employee/');
+            });
+        }
+    });  
+});
+  
